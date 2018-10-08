@@ -1,0 +1,11 @@
+---
+auth:
+  test1: pass1
+  test2: pass2
+
+rules:
+  - user: test1
+    method: publish
+    topics: 
+      - topic1
+      - topic2

@@ -1,0 +1,13 @@
+name: http_emqauth_service
+version: 0.1.0
+
+authors:
+  - José Fco. Rives <jose@digio.es>
+
+targets:
+  http_emqauth_service:
+    main: src/http_emqauth_service.cr
+
+crystal: 0.26.0
+
+license: MIT
