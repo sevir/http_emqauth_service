@@ -19,12 +19,14 @@ module HttpEmqauthService
 
       env.response.content_type = "application/json"
 
-      if config.authenticate(username, password)
-        env.response.status_code = 200
-        {"status": "ok"}.to_json
-      else
-        env.response.status_code = 401
-        {"status": "unauthorized"}.to_json
+      spawn do
+        if config.authenticate(username, password)
+          env.response.status_code = 200
+          {"status": "ok"}.to_json
+        else
+          env.response.status_code = 401
+          {"status": "unauthorized"}.to_json
+        end
       end
     end
 
@@ -47,25 +49,29 @@ module HttpEmqauthService
 
       env.response.content_type = "application/json"
 
-      if config.authorize(username, method, topic)
-        env.response.status_code = 200
-        {"status": "ok"}.to_json
-      else
-        env.response.status_code = 401
-        {"status": "unauthorized"}.to_json
+      spawn do
+        if config.authorize(username, method, topic)
+          env.response.status_code = 200
+          {"status": "ok"}.to_json
+        else
+          env.response.status_code = 401
+          {"status": "unauthorized"}.to_json
+        end
       end
     end
 
     get "/reload" do |env|
-      config.load
-      puts "Configuration loaded"
-
-      env.response.status_code = 200
-      {"status": "ok"}.to_json
+      spawn do
+        config.load
+        puts "Configuration loaded"
+  
+        env.response.status_code = 200
+        {"status": "ok"}.to_json
+      end
     end
 
-
-    Kemal.run
+    Kemal.config.logging = false
+    Kemal.run { |cfg| cfg.server.not_nil!.listen("0.0.0.0",3000, reuse_port: true) }
 
   rescue exception
     puts exception
