@@ -2,7 +2,7 @@ require "./spec_helper"
 require "../src/config_loader"
 
 describe HttpEmqauthService do
-  config = ConfigLoader.new
+  config = ConfigLoader.new("./config.yml")
   config.load
 
   it "authentication works" do
