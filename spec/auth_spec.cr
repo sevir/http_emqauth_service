@@ -1,3 +1,4 @@
+ENV["SPEC"] = "true"
 require "./spec_helper"
 require "../src/auth"
 require "../src/config_loader"
