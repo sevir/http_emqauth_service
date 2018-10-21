@@ -82,7 +82,7 @@ module HttpEmqauthService
     unless RUNNING_SPEC
       puts "Listening 0.0.0.0:#{ENV["PORT"]}"
       Kemal.config.logging = false
-      Kemal.run { |cfg| cfg.server.not_nil!.listen("0.0.0.0", 3000, reuse_port: true) }
+      Kemal.run { |cfg| cfg.server.not_nil!.listen("0.0.0.0", ENV["PORT"].to_i, reuse_port: true) }
     end
 
   rescue exception
