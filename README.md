@@ -18,9 +18,9 @@ The service will be listing in the port 3000 by default. Run normally with
 
 ### Setting up with ENV variables
 
-Define CONFIG_PATH for changing the path of the configuration file .yml
+Define `CONFIG_PATH` for changing the path of the configuration file .yml
 
-Define CONFIG_YAML for insert the configuration as string in the env environment
+Define `CONFIG_YAML` for insert the configuration as string in the env environment
 
 ## Development
 
