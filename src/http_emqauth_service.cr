@@ -4,13 +4,16 @@ require "kemal"
 
 module HttpEmqauthService
   VERSION = "0.1.0"
+  ENV["SPEC"] ||= "false"
+  
+  RUNNING_SPEC = ENV["SPEC"] == "true"
 
   begin
     config = ConfigLoader.new
     config.load
     auth = Auth.new(config.getAuth, config.getRules)
 
-    puts "Configuration loaded"
+    puts "Configuration loaded" unless RUNNING_SPEC
 
     # Running webserver
     get "/auth" do |env|
@@ -71,9 +74,7 @@ module HttpEmqauthService
       end
     end
 
-    ENV["SPEC"] ||= "false"
-
-    if ENV["SPEC"] == "false"
+    unless RUNNING_SPEC
       Kemal.config.logging = false
       Kemal.run { |cfg| cfg.server.not_nil!.listen("0.0.0.0",3000, reuse_port: true) }
     end

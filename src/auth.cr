@@ -24,6 +24,7 @@ class Auth
     end
 
     def authorize( username : String , clientid : String, method : String , topic : String) : Bool
+        # TODO: Check rules with clientid param
         if !@rules.nil?
             rules_not_nil : Array(YAML::Any) = @rules.as(Array(YAML::Any))
 

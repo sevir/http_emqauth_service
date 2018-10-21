@@ -1,18 +1,38 @@
 # http_emqauth_service
 
-TODO: Write a description here
+This service allow to emq MQTT server, a flexible configuration for authentication and authorization without restart the service.
+
+The http auth service is build as binary program with Crystal Lang
 
 ## Installation
 
-TODO: Write installation instructions here
+Download the last binary release or build from sources
 
 ## Usage
 
-TODO: Write usage instructions here
+The service will be listing in the port 3000 by default. Run normally with
+
+```bash
+./http_emqauth_service
+```
+
+### Setting up with ENV variables
+
+Define CONFIG_PATH for changing the path of the configuration file .yml
+
+Define CONFIG_YAML for insert the configuration as string in the env environment
 
 ## Development
 
-TODO: Write development instructions here
+Install the required shards with:
+
+```bash
+shards install
+```
+
+Create the specs for testing your changes.
+
+Tested and build with Crystal 0.26.1
 
 ## Contributing
 
@@ -24,4 +44,4 @@ TODO: Write development instructions here
 
 ## Contributors
 
-- [your-github-user](https://github.com/your-github-user) José Fco. Rives - creator, maintainer
+- [SeViR](https://github.com/sevir) José Fco. Rives - creator, maintainer
