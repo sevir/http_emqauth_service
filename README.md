@@ -22,6 +22,28 @@ Define `CONFIG_PATH` for changing the path of the configuration file .yml
 
 Define `CONFIG_YAML` for insert the configuration as string in the env environment
 
+### Running with config file
+
+By default the program will load the file `config.yml`
+
+### The structure of the config.yml
+
+```yaml
+---
+auth:
+  test1: pass1
+  test2: pass2
+
+rules:
+  - user: test1
+  # Possible methods "publish", "subscribe"
+    method: publish
+  # Topics allow variables %c for client id and $u for username
+    topics: 
+      - topic1/%u
+      - topic2
+```
+
 ## Development
 
 Install the required shards with:

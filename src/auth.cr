@@ -31,7 +31,7 @@ class Auth
             rules_not_nil.each do |rule|
                 if rule["user"] == username && rule["method"] == method
                     rule["topics"].as_a.each do |rule_topic|
-                        if rule_topic == topic
+                        if parse_rule( rule_topic.to_s, username, clientid) == topic
                             return true
                         end
                     end
@@ -41,6 +41,17 @@ class Auth
             false
         else
             false
+        end
+    end
+
+    private def parse_rule(topic : String, username : String, clientid : String) : String
+        topic.gsub /%[uc]/ do |variable|
+            case variable
+            when "%c"
+                clientid
+            when "%u"
+                username
+            end
         end
     end
 end

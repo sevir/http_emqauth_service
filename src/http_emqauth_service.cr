@@ -67,7 +67,9 @@ module HttpEmqauthService
     get "/reload" do |env|
       spawn do
         config.load
-        puts "Configuration loaded"
+        auth = Auth.new(config.getAuth, config.getRules)
+
+        puts "Configuration reloaded"
   
         env.response.status_code = 200
         {"status": "ok"}.to_json
