@@ -5,6 +5,7 @@ require "kemal"
 
 module HttpEmqauthService
   VERSION = "0.1.0"
+
   ENV["SPEC"] ||= "false"
 
   ENV["PORT"] ||= "3000"
@@ -80,6 +81,7 @@ module HttpEmqauthService
     end
 
     unless RUNNING_SPEC
+      # Listening server
       puts "Listening 0.0.0.0:#{ENV["PORT"]}"
       Kemal.config.logging = false
       Kemal.run { |cfg| cfg.server.not_nil!.listen("0.0.0.0", ENV["PORT"].to_i, reuse_port: true) }
