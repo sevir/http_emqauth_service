@@ -40,8 +40,8 @@ auth:
 
 rules:
   - user: test1
-  # Possible methods "publish", "subscribe"
-    method: publish
+  # Possible methods "pub", "sub", "pubsub"
+    method: pubsub
   # Topics allow variables %c for client id and $u for username
     topics: 
       - topic1/%u
