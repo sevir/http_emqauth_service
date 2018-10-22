@@ -7,7 +7,7 @@ module HttpEmqauthService
   VERSION = "0.1.0"
 
   ENV["SPEC"] ||= "false"
-
+  ENV["DEBUG"] ||= "false"
   ENV["PORT"] ||= "3000"
   
   RUNNING_SPEC = ENV["SPEC"] == "true"
@@ -27,14 +27,12 @@ module HttpEmqauthService
 
       env.response.content_type = "application/json"
 
-      spawn do
-        if auth.authenticate(username, password)
-          env.response.status_code = 200
-          {"status": "ok"}.to_json
-        else
-          env.response.status_code = 401
-          {"status": "unauthorized"}.to_json
-        end
+      if auth.authenticate(username, password)
+        env.response.status_code = 200
+        {"status": "ok"}.to_json
+      else
+        env.response.status_code = 401
+        {"status": "unauthorized"}.to_json
       end
     end
 
@@ -57,14 +55,12 @@ module HttpEmqauthService
 
       env.response.content_type = "application/json"
 
-      spawn do
-        if auth.authorize(username, clientid, method, topic)
-          env.response.status_code = 200
-          {"status": "ok"}.to_json
-        else
-          env.response.status_code = 401
-          {"status": "unauthorized"}.to_json
-        end
+      if auth.authorize(username, clientid, method, topic)
+        env.response.status_code = 200
+        {"status": "ok"}.to_json
+      else
+        env.response.status_code = 401
+        {"status": "unauthorized"}.to_json
       end
     end
 
@@ -83,7 +79,7 @@ module HttpEmqauthService
     unless RUNNING_SPEC
       # Listening server
       puts "Listening 0.0.0.0:#{ENV["PORT"]}"
-      Kemal.config.logging = false
+      Kemal.config.logging = false unless ENV["DEBUG"] == "true"
       Kemal.run { |cfg| cfg.server.not_nil!.listen("0.0.0.0", ENV["PORT"].to_i, reuse_port: true) }
     end
 

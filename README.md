@@ -22,6 +22,10 @@ Define `CONFIG_PATH` for changing the path of the configuration file .yml
 
 Define `CONFIG_YAML` for insert the configuration as string in the env environment
 
+Define `PORT` if you want to change the default listen port 3000
+
+Define `DEBUG` if you want see the debug info
+
 ### Running with config file
 
 By default the program will load the file `config.yml`
@@ -42,6 +46,23 @@ rules:
     topics: 
       - topic1/%u
       - topic2
+```
+
+## Building and deploy with Docker
+
+* Build a Docker image from sources
+
+```bash
+docker build -t http_emqauth_service .
+```
+
+* Run the image mounting the config and setting up some env variables
+
+```bash
+docker run -p 127.0.0.1:3000:3000 \
+-e "DEBUG=true" -e "CONFIG_PATH=config1.yml" \
+--mount type=bind,source="$(pwd)"/config.yml,target=/app/config1.yml  \
+http_emqauth_service
 ```
 
 ## Development
