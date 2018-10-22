@@ -5,7 +5,8 @@ auth:
 
 rules:
   - user: test1
-    method: publish
+    # methods: pub | sub | pubsub
+    method: pub
     topics: 
       - topic1
-      - topic2
+      - topic2/%c

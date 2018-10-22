@@ -48,7 +48,6 @@ module HttpEmqauthService
     get "/check" do |env|
       clientid = env.params.query["clientid"].as(String)
       username = env.params.query["username"].as(String)
-      password = env.params.query["password"].as(String)
       ipaddress = env.params.query["ipaddress"].as(String)
       topic = env.params.query["topic"].as(String)
       method = env.params.query["method"].as(String)

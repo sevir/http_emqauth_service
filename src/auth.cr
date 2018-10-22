@@ -29,7 +29,7 @@ class Auth
             rules_not_nil : Array(YAML::Any) = @rules.as(Array(YAML::Any))
 
             rules_not_nil.each do |rule|
-                if rule["user"] == username && rule["method"] == method
+                if rule["user"] == username && check_method(rule["method"].to_s, method)
                     rule["topics"].as_a.each do |rule_topic|
                         if parse_rule( rule_topic.to_s, username, clientid) == topic
                             return true
@@ -41,6 +41,17 @@ class Auth
             false
         else
             false
+        end
+    end
+
+    private def check_method(rule_method : String, request_method : String)
+        request_method_int = request_method.to_i
+
+        case rule_method
+        when "pubsub"
+            true
+        else
+            (rule_method == "pub" && request_method_int == 2) || (rule_method == "sub" && request_method_int == 1) 
         end
     end
 

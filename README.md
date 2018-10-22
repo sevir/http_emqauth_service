@@ -1,4 +1,4 @@
-# http_emqauth_service
+# HTTP EMQ Auth service
 
 This service allow to emq MQTT server, a flexible configuration for authentication and authorization without restart the service.
 
@@ -65,6 +65,57 @@ docker run -p 127.0.0.1:3000:3000 \
 http_emqauth_service
 ```
 
+## Configure the plugin emqx_auth_http in EMQ for this service
+
+File: `etc/emqx_auth_http.conf`
+
+```
+##--------------------------------------------------------------------
+## Authentication request.
+##
+## Variables:
+##  - %u: username
+##  - %c: clientid
+##  - %a: ipaddress
+##  - %P: password
+##
+## Value: URL
+auth.http.auth_req = http://127.0.0.1:3000/auth
+auth.http.auth_req.method = get
+## Value: Params
+auth.http.auth_req.params = clientid=%c,username=%u,password=%P
+
+##--------------------------------------------------------------------
+## Superuser request.
+##
+## Variables:
+##  - %u: username
+##  - %c: clientid
+##  - %a: ipaddress
+##
+## Value: URL
+auth.http.super_req = http://127.0.0.1:3000/superuser
+auth.http.super_req.method = get
+## Value: Params
+auth.http.super_req.params = clientid=%c,username=%u
+
+##--------------------------------------------------------------------
+## ACL request.
+##
+## Variables:
+##  - %A: 1 | 2, 1 = sub, 2 = pub
+##  - %u: username
+##  - %c: clientid
+##  - %a: ipaddress
+##  - %t: topic
+##
+## Value: URL
+auth.http.acl_req = http://127.0.0.1:3000/check
+auth.http.acl_req.method = get
+## Value: Params
+auth.http.acl_req.params = method=%A,username=%u,clientid=%c,ipaddr=%a,topic=%t
+```
+
 ## Development
 
 Install the required shards with:
@@ -79,7 +130,7 @@ Tested and build with Crystal 0.26.1
 
 ## Contributing
 
-1. Fork it (<https://github.com/your-github-user/http_emqauth_service/fork>)
+1. Fork it (<https://github.com/sevir/http_emqauth_service/fork>)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
