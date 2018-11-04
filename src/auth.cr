@@ -31,7 +31,8 @@ class Auth
             rules_not_nil.each do |rule|
                 if rule["user"] == username && check_method(rule["method"].to_s, method)
                     rule["topics"].as_a.each do |rule_topic|
-                        if parse_rule( rule_topic.to_s, username, clientid) == topic
+                        parsed_rule = parse_rule( rule_topic.to_s, username, clientid)
+                        if parsed_rule == topic || regexp_rule(parsed_rule) =~ topic
                             return true
                         end
                     end
@@ -64,5 +65,19 @@ class Auth
                 username
             end
         end
+    end
+
+    private def regexp_rule(rule_topic : String) : Regex
+        regexp_rule = rule_topic.gsub /[\+#]/ do |variable|
+            case variable
+            when "+"
+                "[^\s/]+"
+            when "#"
+                ".*"
+            end
+        end
+
+        # Ignored exception when the rule is not a valid regex
+        Regex.new(regexp_rule)
     end
 end

@@ -4,7 +4,7 @@ require "kemal"
 
 
 module HttpEmqauthService
-  VERSION = "0.1.0"
+  VERSION = "0.1.3"
 
   ENV["SPEC"] ||= "false"
   ENV["DEBUG"] ||= "false"
@@ -64,15 +64,19 @@ module HttpEmqauthService
     end
 
     get "/reload" do |env|
-      spawn do
+      begin
         config.load
         auth = Auth.new(config.getAuth, config.getRules)
-
-        puts "Configuration reloaded"
   
+        puts "Configuration reloaded" if ENV["DEBUG"] == "true"
         env.response.status_code = 200
         {"status": "ok"}.to_json
+
+      rescue exception
+        env.response.status_code = 500
+        {"status": exception.message}.to_json
       end
+
     end
 
     unless RUNNING_SPEC
