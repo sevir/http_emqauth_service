@@ -23,7 +23,7 @@ class Auth
         end
     end
 
-    def authorize( username : String , clientid : String, method : String , topic : String) : Bool
+    def authorize( username : String , clientid : String, method : String , topic : String, ipaddress : String) : Bool
         # TODO: Check rules with clientid param
         if !@rules.nil?
             rules_not_nil : Array(YAML::Any) = @rules.as(Array(YAML::Any))
@@ -31,7 +31,7 @@ class Auth
             rules_not_nil.each do |rule|
                 if rule["user"] == username && check_method(rule["method"].to_s, method)
                     rule["topics"].as_a.each do |rule_topic|
-                        parsed_rule = parse_rule( rule_topic.to_s, username, clientid)
+                        parsed_rule = parse_rule( rule_topic.to_s, username, clientid, ipaddress)
                         if parsed_rule == topic || regexp_rule(parsed_rule) =~ topic
                             return true
                         end
@@ -56,13 +56,15 @@ class Auth
         end
     end
 
-    private def parse_rule(topic : String, username : String, clientid : String) : String
-        topic.gsub /%[uc]/ do |variable|
+    private def parse_rule(topic : String, username : String, clientid : String, ipaddress : String) : String
+        topic.gsub /%[uci]/ do |variable|
             case variable
             when "%c"
                 clientid
             when "%u"
                 username
+            when "%i"
+                ipaddress
             end
         end
     end

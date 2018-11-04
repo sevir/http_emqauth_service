@@ -42,7 +42,7 @@ rules:
   - user: test1
   # Possible methods "pub", "sub", "pubsub"
     method: pubsub
-  # Topics allow variables %c for client id and $u for username
+  # Topics allow variables %c for client id, %i for ip_address and $u for username
     topics: 
       - topic1/%u
       - topic2
@@ -67,7 +67,7 @@ http_emqauth_service
 
 ## Configure the plugin emqx_auth_http in EMQ for this service
 
-File: `etc/emqx_auth_http.conf`
+File: `etc/plugins/emq_auth_http.conf` or `/etc/emqttd/plugins/emq_auth_http.conf`
 
 ```
 ##--------------------------------------------------------------------
@@ -97,7 +97,7 @@ auth.http.auth_req.params = clientid=%c,username=%u,password=%P
 auth.http.super_req = http://127.0.0.1:3000/superuser
 auth.http.super_req.method = get
 ## Value: Params
-auth.http.super_req.params = clientid=%c,username=%u
+auth.http.super_req.params = clientid=%c,username=%u,ipaddress=%a
 
 ##--------------------------------------------------------------------
 ## ACL request.
@@ -110,10 +110,10 @@ auth.http.super_req.params = clientid=%c,username=%u
 ##  - %t: topic
 ##
 ## Value: URL
-auth.http.acl_req = http://127.0.0.1:3000/check
+auth.http.acl_req = http://127.0.0.1:3000/acl
 auth.http.acl_req.method = get
 ## Value: Params
-auth.http.acl_req.params = method=%A,username=%u,clientid=%c,ipaddr=%a,topic=%t
+auth.http.acl_req.params = access=%A,username=%u,clientid=%c,ipaddress=%a,topic=%t
 ```
 
 ## Development

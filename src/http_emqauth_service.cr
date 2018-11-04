@@ -4,7 +4,7 @@ require "kemal"
 
 
 module HttpEmqauthService
-  VERSION = "0.1.3"
+  VERSION = "0.3.0"
 
   ENV["SPEC"] ||= "false"
   ENV["DEBUG"] ||= "false"
@@ -36,7 +36,8 @@ module HttpEmqauthService
       end
     end
 
-    get "/super" do |env|
+    # Superuser is disabled
+    get "/superuser" do |env|
       clientid = env.params.query["clientid"].as(String)
       username = env.params.query["username"].as(String)
       ipaddress = env.params.query["ipaddress"].as(String)
@@ -45,16 +46,16 @@ module HttpEmqauthService
       {"status": "unauthorized"}.to_json
     end
 
-    get "/check" do |env|
+    get "/acl" do |env|
       clientid = env.params.query["clientid"].as(String)
       username = env.params.query["username"].as(String)
       ipaddress = env.params.query["ipaddress"].as(String)
       topic = env.params.query["topic"].as(String)
-      method = env.params.query["method"].as(String)
+      method = env.params.query["access"].as(String)
 
       env.response.content_type = "application/json"
 
-      if auth.authorize(username, clientid, method, topic)
+      if auth.authorize(username, clientid, method, topic, ipaddress)
         env.response.status_code = 200
         {"status": "ok"}.to_json
       else
