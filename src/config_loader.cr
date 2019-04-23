@@ -1,6 +1,7 @@
 require "yaml"
 
 class ConfigLoader
+    @yaml_str: String
     @config: YAML::Any
     @path: String
     @auth: YAML::Any | Nil
@@ -10,6 +11,7 @@ class ConfigLoader
         @config = YAML.parse "---"
         @auth = nil
         @rules = nil
+        @yaml_str = ""
 
         # ENV variables
         ENV["CONFIG_YAML"] ||= ""
@@ -24,11 +26,13 @@ class ConfigLoader
     def load
         begin
             if ENV["CONFIG_YAML"].empty?
-                @config = YAML.parse File.read(@path)
+                @yaml_str = File.read(@path)
             else
-                @config = YAML.parse ENV["CONFIG_YAML"]
+                @yaml_str = ENV["CONFIG_YAML"]
             end
-
+            
+            @config = YAML.parse @yaml_str
+            
             begin
                 @auth = @config["auth"]
                 @rules = @config["rules"]
@@ -47,4 +51,17 @@ class ConfigLoader
         @rules
     end
 
+    def getYaml
+        @yaml_str
+    end
+
+    def setYaml(yml_str : String)
+        @yaml_str = yml_str
+
+        if ENV["CONFIG_YAML"].empty?
+            File.write @path, yml_str
+        else
+            ENV["CONFIG_YAML"] = @yaml_str
+        end
+    end
 end

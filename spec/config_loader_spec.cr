@@ -65,4 +65,43 @@ describe "ConfigLoader" do
             conf.getRules.should be_truthy
         end        
     end
+
+    it "Puts YAML string in env" do
+        with_env_yaml do
+            conf = ConfigLoader.new
+            conf.load
+
+            conf.getYaml.should eq ENV["CONFIG_YAML"]
+        end
+    end
+
+    it "Write YAML config" do
+        yaml_str = <<-CONFIG
+        ---
+        auth:
+          test1: env1
+
+        rules:
+          - user: test1
+            method: publish
+            topics: 
+            - topic1
+        CONFIG
+
+        with_env_path do
+            begin
+                conf = ConfigLoader.new
+                conf.setYaml yaml_str
+
+                conf.load
+
+                conf.getAuth.should be_truthy
+                conf.getRules.should be_truthy
+                
+                FileUtils.rm ENV["CONFIG_PATH"]
+            rescue exception
+                p exception.message
+            end
+        end
+    end
 end
