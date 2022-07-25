@@ -14,7 +14,7 @@ class Auth
 
     def authenticate( username : String , password : String) : Bool
         user : YAML::Any::Type = username
-        
+
         if !@auth.nil?
             auth_not_nil : YAML_Hash = @auth.as(YAML_Hash)
             auth_not_nil.has_key?(user) && auth_not_nil[ user ] == password
@@ -38,7 +38,7 @@ class Auth
                     end
                 end
             end
-            
+
             false
         else
             false
@@ -46,14 +46,20 @@ class Auth
     end
 
     private def check_method(rule_method : String, request_method : String)
-        request_method_int = request_method.to_i
+      actions = { "publish" => 2, "subscribe" => 1 }
 
-        case rule_method
-        when "pubsub"
-            true
-        else
-            (rule_method == "pub" && request_method_int == 2) || (rule_method == "sub" && request_method_int == 1) 
-        end
+      begin
+        request_method_int = request_method.to_i
+      rescue
+        request_method_int = actions[request_method]
+      end
+
+      case rule_method
+      when "pubsub"
+          true
+      else
+          (rule_method == "pub" && request_method_int == 2) || (rule_method == "sub" && request_method_int == 1)
+      end
     end
 
     private def parse_rule(topic : String, username : String, clientid : String, ipaddress : String) : String

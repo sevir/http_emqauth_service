@@ -4,7 +4,7 @@ require "./web_ui"
 require "kemal"
 
 module HttpEmqauthService
-  VERSION = "0.3.0"
+  VERSION = "0.6.0"
 
   ENV["SPEC"] ||= "false"
   ENV["DEBUG"] ||= "false"
@@ -15,7 +15,7 @@ module HttpEmqauthService
 
   begin
     config = ConfigLoader.new
-    
+
     config.load
     auth = Auth.new(config.getAuth, config.getRules)
 
@@ -34,10 +34,10 @@ module HttpEmqauthService
 
       if auth.authenticate(username, password)
         env.response.status_code = 200
-        {"status": "ok"}.to_json
+        {"status": "ok", "result": "allow"}.to_json
       else
-        env.response.status_code = 401
-        {"status": "unauthorized"}.to_json
+        env.response.status_code = 200
+        {"status": "unauthorized", "result": "deny"}.to_json
       end
     end
 
@@ -62,10 +62,10 @@ module HttpEmqauthService
 
       if auth.authorize(username, clientid, method, topic, ipaddress)
         env.response.status_code = 200
-        {"status": "ok"}.to_json
+        {"status": "ok", "result": "allow"}.to_json
       else
-        env.response.status_code = 401
-        {"status": "unauthorized"}.to_json
+        env.response.status_code = 200
+        {"status": "unauthorized", "result": "deny"}.to_json
       end
     end
 
@@ -82,7 +82,7 @@ module HttpEmqauthService
         {"status": exception.message}.to_json
       end
     end
-    
+
     if ENV["WEBUI"] == "true"
       get "/" do |env|
         webui.index(config.getYaml)
@@ -91,12 +91,12 @@ module HttpEmqauthService
       post "/saveconfig" do |env|
         begin
           yaml_str = env.params.body["yaml"].as(String)
-  
+
           config.setYaml yaml_str
           config.load
-  
+
           puts "New config saved" if ENV["DEBUG"] == "true"
-  
+
           env.response.status_code = 200
           {"status": "ok"}.to_json
         rescue exception
@@ -105,7 +105,7 @@ module HttpEmqauthService
         end
       end
     end
-    
+
 
     unless RUNNING_SPEC
       # Listening server
